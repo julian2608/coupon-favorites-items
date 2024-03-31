@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.shared.infrastructure.config;
+package com.coupon.favorites.items.shared.config;
 
 import com.coupon.favorites.items.shared.domain.ApiCallException;
 import org.springframework.http.HttpStatus;

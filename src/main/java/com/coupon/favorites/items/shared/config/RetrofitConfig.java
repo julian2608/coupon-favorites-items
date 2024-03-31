@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.shared.infrastructure;
+package com.coupon.favorites.items.shared.config;
 
 
 import com.coupon.favorites.items.maximizedcoupon.domain.service.MeliPublicApiService;

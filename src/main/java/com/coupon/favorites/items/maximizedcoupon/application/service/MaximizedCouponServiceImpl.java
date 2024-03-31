@@ -8,12 +8,10 @@ import com.coupon.favorites.items.maximizedcoupon.domain.usecase.GetItemsPriceUs
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import io.vavr.control.Either;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Iterator;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,25 +19,41 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
 
     private final GetItemsPriceUseCase getItemsPriceUseCase;
 
+    private final ApplicationEventPublisher publisher;
 
     public MaximizedCouponServiceImpl(
-            GetItemsPriceUseCase getItemsPriceUseCase) {
+            GetItemsPriceUseCase getItemsPriceUseCase,
+            ApplicationEventPublisher publisher
+    ) {
         this.getItemsPriceUseCase = getItemsPriceUseCase;
+        this.publisher = publisher;
     }
 
     @Override
     public Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest){
-        List<Item> itemsPrice = getItemsPrice(couponRequest.getFavoritesItems());
+        ItemsId itemsId = couponRequest.getFavoritesItems();
+
+        synchronized (itemsId) {
+            publishEventCountFavorites(itemsId);
+        }
+
+        List<Item> itemsPrice = getItemsPrice(itemsId);
 
         double amountCoupon = couponRequest.getCoupon().getValue();
 
         MaximizeCouponResponse resultSum = sumSequence(itemsPrice, amountCoupon);
 
-
         binaryPriceSearch(itemsPrice, resultSum, amountCoupon);
 
-
         return Either.right(resultSum);
+    }
+
+    private void publishEventCountFavorites (ItemsId itemsId) {
+        ItemsId itemsIdCopy;
+
+        itemsIdCopy = new ItemsId(new HashSet<>(itemsId.getValue()));
+
+        publisher.publishEvent(itemsIdCopy);
     }
 
     private MaximizeCouponResponse sumSequence(List<Item> itemsPrice, double amountCoupon) {

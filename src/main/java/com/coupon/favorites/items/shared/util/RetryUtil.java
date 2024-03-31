@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.shared.infrastructure.util;
+package com.coupon.favorites.items.shared.util;
 
 import java.time.Duration;
 import java.util.function.Supplier;

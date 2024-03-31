@@ -6,5 +6,5 @@ import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponRe
 import io.vavr.control.Either;
 
 public interface MaximizeCouponService {
-    Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest) throws Exception;
+    Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest);
 }
