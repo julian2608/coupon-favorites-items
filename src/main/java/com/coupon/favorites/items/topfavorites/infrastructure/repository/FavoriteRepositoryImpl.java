@@ -1,13 +1,16 @@
-package com.coupon.favorites.items.topfavorites.infrastructure;
+package com.coupon.favorites.items.topfavorites.infrastructure.repository;
 
 import com.coupon.favorites.items.topfavorites.domain.entity.ItemFavorite;
 import com.coupon.favorites.items.topfavorites.domain.service.ItemFavoriteRepository;
 import com.mongodb.client.result.UpdateResult;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class FavoriteRepositoryImpl implements ItemFavoriteRepository {
@@ -28,5 +31,14 @@ public class FavoriteRepositoryImpl implements ItemFavoriteRepository {
 
         return updatedItemFavorite.getMatchedCount() != 0L || updatedItemFavorite.getModifiedCount() != 0L
                 ? 1 : 0;
+    }
+
+    @Override
+    public List<ItemFavorite> getTopFavorites(int maxTop) {
+        Query query = new Query();
+        query.limit(maxTop);
+        query.with(Sort.by(Sort.Direction.DESC, "quantity"));
+
+        return mongoTemplate.find(query, ItemFavorite.class, "item-favorite");
     }
 }

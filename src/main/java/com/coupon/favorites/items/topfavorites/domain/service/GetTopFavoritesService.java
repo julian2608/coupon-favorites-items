@@ -6,10 +6,6 @@ import io.vavr.control.Either;
 
 import java.util.List;
 
-
-public interface ItemFavoriteRepository {
-    Integer incrementQuantityById(String itemFavorite);
-
-    List<ItemFavorite> getTopFavorites(int maxTop);
-
+public interface GetTopFavoritesService {
+    Either<ErrorFavorites, List<ItemFavorite>> execute (int maxTop);
 }

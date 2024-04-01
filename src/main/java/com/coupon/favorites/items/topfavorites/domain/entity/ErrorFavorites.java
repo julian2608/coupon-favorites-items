@@ -21,4 +21,11 @@ public class ErrorFavorites {
             .code(HttpStatus.FAILED_DEPENDENCY)
             .message("Error updating favorites.")
             .build();
+
+    public static ErrorFavorites ErrorGettingFavorites
+            = ErrorFavorites
+            .builder()
+            .code(HttpStatus.NOT_FOUND)
+            .message("Favorite items not found.")
+            .build();
 }
