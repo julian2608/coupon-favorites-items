@@ -2,11 +2,13 @@ package com.coupon.favorites.items.shared.util;
 
 import java.time.Duration;
 import java.util.function.Supplier;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import com.coupon.favorites.items.shared.domain.ApiCallException;
+
+import com.coupon.favorites.items.shared.ApiCallException;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class RetryUtil  {
     private static final int MAX_RETRIES_ATTEMPTS = 3;
@@ -15,7 +17,7 @@ public class RetryUtil  {
     public static <T> T retryApiCallFunction(Supplier<T> callingObject){
         RetryConfig config = RetryConfig.custom()
                 .maxAttempts(MAX_RETRIES_ATTEMPTS)
-                //.waitDuration(Duration.of(MAX_WAIT_RETRY, SECONDS))
+                .waitDuration(Duration.of(MAX_WAIT_RETRY, SECONDS))
                 .retryOnException(
                         ex -> ex instanceof ApiCallException && ((ApiCallException) ex).getCode() >= 500 &&
                         ((ApiCallException) ex).getCode() < 600)

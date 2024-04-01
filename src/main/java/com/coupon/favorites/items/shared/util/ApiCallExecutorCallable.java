@@ -1,14 +1,13 @@
 package com.coupon.favorites.items.shared.util;
 
 
-import com.coupon.favorites.items.shared.domain.ApiCallException;
+import com.coupon.favorites.items.shared.ApiCallException;
 import okhttp3.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import retrofit2.Call;
 import retrofit2.Response;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
 public class ApiCallExecutorCallable<T> implements Callable<T> {
     private final Call<T> call;
@@ -34,6 +33,7 @@ public class ApiCallExecutorCallable<T> implements Callable<T> {
     private static String extractErrorMessage(final Response errorResponse) {
         ResponseBody errorBody = errorResponse.errorBody();
         try {
+            assert errorBody != null;
             return errorBody.string().trim();
         } catch (Exception ex) {
             return "Failed to get body. ["+ex.getCause()+"] ["+ ex.getMessage()+"]";

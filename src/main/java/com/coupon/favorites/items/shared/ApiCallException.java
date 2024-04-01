@@ -1,7 +1,10 @@
-package com.coupon.favorites.items.shared.domain;
+package com.coupon.favorites.items.shared;
+
+import lombok.Getter;
 
 public class ApiCallException  extends RuntimeException {
 
+    @Getter
     private final int code;
     private final String message;
 
@@ -9,10 +12,6 @@ public class ApiCallException  extends RuntimeException {
         super(message);
         this.code = code;
         this.message = message;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     @Override

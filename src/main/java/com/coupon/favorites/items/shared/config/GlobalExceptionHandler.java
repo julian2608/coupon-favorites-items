@@ -1,6 +1,6 @@
 package com.coupon.favorites.items.shared.config;
 
-import com.coupon.favorites.items.shared.domain.ApiCallException;
+import com.coupon.favorites.items.shared.ApiCallException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

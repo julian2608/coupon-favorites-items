@@ -3,7 +3,7 @@ package com.coupon.favorites.items.itemsprice.application.service;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
 import com.coupon.favorites.items.itemsprice.domain.entity.ItemPriceResponse;
 import com.coupon.favorites.items.itemsprice.domain.service.GetItemsPriceService;
-import com.coupon.favorites.items.shared.infrastructure.MeliPublicApiService;
+import com.coupon.favorites.items.shared.service.MeliPublicApiService;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import com.coupon.favorites.items.shared.util.ApiCallExecutorCallable;
@@ -67,9 +67,7 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
             for (Future<List<ItemPriceResponse>> future : futureItems) {
                 resultList.addAll(future.get());
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
         return resultList.stream()

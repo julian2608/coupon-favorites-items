@@ -1,7 +1,8 @@
 package com.coupon.favorites.items.shared.config;
 
 
-import com.coupon.favorites.items.shared.infrastructure.MeliPublicApiService;
+import com.coupon.favorites.items.shared.service.MeliPublicApiService;
+import com.coupon.favorites.items.tokenclientoauth2.domain.usecase.GetTokenExternalUseCase;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,34 +24,22 @@ public class RetrofitConfig {
     @Value("${app.retrofit.write-timeout:30000}")
     private long writeTimeout;
 
+    @Value("${app.meli.public.api}")
     private String urlApiMeli;
+    private static Retrofit retrofit;
 
-    private final String authorizationHeaderName;
+    @Value("${app.retrofit.authorization-header-name}")
+    private String authorizationHeaderName;
 
-    private final String token;
+    private final GetTokenExternalUseCase getTokenExternalUseCase;
 
-   /* private OAuth2AuthorizedClientService authorizedClientService;
-
-    private OAuth2AuthorizedClient client;*/
-
-    public RetrofitConfig(
-            @Value("${app.retrofit.authorization-header-name}") String authorizationHeaderName,
-            @Value("${app.meli.public.api}") final String urlApiMeli,
-            @Value("${app.meli.public.api.token}") final String token
-            //OAuth2AuthorizedClientService authorizedClientService
-    ){
-        this.authorizationHeaderName = authorizationHeaderName;
-        this.urlApiMeli = urlApiMeli;
-        this.token = token;
-
-        /*this.authorizedClientService = authorizedClientService;
-
-        client = authorizedClientService.loadAuthorizedClient("mercadolibre", "mercadolibre");*/
-
+    public RetrofitConfig(GetTokenExternalUseCase getTokenExternalUseCase){
+        this.getTokenExternalUseCase = getTokenExternalUseCase;
     }
 
+
     @Bean
-    public MeliPublicApiService restRtEtaStorageApi() {
+    public MeliPublicApiService meliPublicApiService() {
         Retrofit retrofit = getGenericRetrofitBuilderForUri(urlApiMeli);
         return retrofit.create(MeliPublicApiService.class);
     }
@@ -74,6 +63,7 @@ public class RetrofitConfig {
 
     private Interceptor getXAppInterceptor() {
         return chain -> {
+            String token = getTokenExternalUseCase.getToken();
             Request request = chain.request()
                     .newBuilder()
                     .addHeader(authorizationHeaderName, token)
@@ -82,4 +72,16 @@ public class RetrofitConfig {
         };
     }
 
+    public static Retrofit getClient(final String uri) {
+        if (retrofit == null) {
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(uri)
+                    .addConverterFactory(JacksonConverterFactory.create())
+                    .client(httpClient.build())
+                    .build();
+        }
+        return retrofit;
+    }
 }
