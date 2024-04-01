@@ -1,9 +1,9 @@
-package com.coupon.favorites.items.maximizedcoupon.application.service;
+package com.coupon.favorites.items.itemsprice.application.service;
 
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
-import com.coupon.favorites.items.maximizedcoupon.domain.entity.ItemPriceResponse;
-import com.coupon.favorites.items.maximizedcoupon.domain.service.GetItemsPriceService;
-import com.coupon.favorites.items.maximizedcoupon.domain.service.MeliPublicApiService;
+import com.coupon.favorites.items.itemsprice.domain.entity.ItemPriceResponse;
+import com.coupon.favorites.items.itemsprice.domain.service.GetItemsPriceService;
+import com.coupon.favorites.items.shared.infrastructure.MeliPublicApiService;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import com.coupon.favorites.items.shared.util.ApiCallExecutorCallable;

@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.maximizedcoupon.domain.entity;
+package com.coupon.favorites.items.itemsprice.domain.entity;
 
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -1,11 +1,9 @@
 package com.coupon.favorites.items.maximizedcoupon.infrastructure.controllers;
 
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
-import com.coupon.favorites.items.maximizedcoupon.domain.usecase.GetItemsPriceUseCase;
+import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.usecase.MaximizeCouponUseCase;
 import com.coupon.favorites.items.topfavorites.domain.usecase.GetTopFavoritesUseCase;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

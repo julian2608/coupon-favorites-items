@@ -4,16 +4,20 @@ import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponResponse;
 import com.coupon.favorites.items.maximizedcoupon.domain.service.MaximizeCouponService;
-import com.coupon.favorites.items.maximizedcoupon.domain.usecase.GetItemsPriceUseCase;
+import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import io.vavr.control.Either;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Comparator;
 import java.util.stream.Collectors;
-
 @Service
 public class MaximizedCouponServiceImpl implements MaximizeCouponService {
 

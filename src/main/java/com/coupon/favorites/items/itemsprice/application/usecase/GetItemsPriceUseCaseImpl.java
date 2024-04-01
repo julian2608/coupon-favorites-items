@@ -1,8 +1,8 @@
-package com.coupon.favorites.items.maximizedcoupon.application.usecase;
+package com.coupon.favorites.items.itemsprice.application.usecase;
 
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
-import com.coupon.favorites.items.maximizedcoupon.domain.service.GetItemsPriceService;
-import com.coupon.favorites.items.maximizedcoupon.domain.usecase.GetItemsPriceUseCase;
+import com.coupon.favorites.items.itemsprice.domain.service.GetItemsPriceService;
+import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import io.vavr.control.Either;

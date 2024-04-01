@@ -1,6 +1,6 @@
-package com.coupon.favorites.items.maximizedcoupon.domain.service;
+package com.coupon.favorites.items.shared.infrastructure;
 
-import com.coupon.favorites.items.maximizedcoupon.domain.entity.ItemPriceResponse;
+import com.coupon.favorites.items.itemsprice.domain.entity.ItemPriceResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import retrofit2.Call;
 import retrofit2.http.GET;

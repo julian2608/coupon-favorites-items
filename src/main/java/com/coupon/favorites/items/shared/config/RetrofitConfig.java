@@ -1,7 +1,7 @@
 package com.coupon.favorites.items.shared.config;
 
 
-import com.coupon.favorites.items.maximizedcoupon.domain.service.MeliPublicApiService;
+import com.coupon.favorites.items.shared.infrastructure.MeliPublicApiService;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
