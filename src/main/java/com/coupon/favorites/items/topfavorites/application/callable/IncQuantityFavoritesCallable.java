@@ -2,9 +2,8 @@ package com.coupon.favorites.items.topfavorites.application.callable;
 
 import com.coupon.favorites.items.topfavorites.domain.service.ItemFavoriteRepository;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 
-public class IncQuantityFavoritesCallable implements Callable<Integer> {
+public class IncQuantityFavoritesCallable implements Runnable {
     private final Collection<String> favoritesItems;
     private final ItemFavoriteRepository itemFavoriteRepository;
 
@@ -16,8 +15,7 @@ public class IncQuantityFavoritesCallable implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() {
-        favoritesItems.forEach(itemFavoriteRepository::incrementQuantityById);
-        return 1;
+    public void run() {
+        itemFavoriteRepository.incrementQuantity(favoritesItems);
     }
 }

@@ -14,11 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,11 +23,14 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
 
     private final static String ATTRIBUTES = "id,price";
 
-    @Value("${app.meli.public.api.size-batch-item}")
-    private final int SIZE_BATCH=5;
+    private final int SIZE_BATCH;
 
-    public GetItemsPriceServiceImpl(MeliPublicApiService meliPublicApiService) {
+    public GetItemsPriceServiceImpl(
+            MeliPublicApiService meliPublicApiService,
+            @Value("${app.meli.public.api.size-batch-item:20}") int SIZE_BATCH
+            ) {
         this.meliPublicApiService = meliPublicApiService;
+        this.SIZE_BATCH = SIZE_BATCH;
     }
 
     @Override
@@ -41,24 +40,19 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
 
     private List<Item> getItemPricesBatchAsync(ItemsId itemsId) {
         try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
-            double maxThreads = Math.ceil((double) itemsId.getValue().size() / (double) SIZE_BATCH);
+            List<Future<List<ItemPriceResponse>>> futures = executorService.invokeAll(getBatchTask(itemsId));
 
-            List<Callable<List<ItemPriceResponse>>> tasks = new ArrayList<>();
 
-            for (int i = 0; i < maxThreads; i++) {
-                tasks.add(createTaskCallApi(itemsId));
-            }
+            executorService.shutdown();
+        return futureToListItem(futures);
 
-            List<Future<List<ItemPriceResponse>>> futures = executorService.invokeAll(tasks);
-
-            return futureToListItem(futures);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     private ApiCallExecutorCallable createTaskCallApi(ItemsId itemsId) {
-        return new ApiCallExecutorCallable<>(meliPublicApiService.getItemsPrice(getBatch(itemsId).toQueryParam(), ATTRIBUTES));
+        return new ApiCallExecutorCallable<>(meliPublicApiService.getItemsPrice(itemsId.toQueryParam(), ATTRIBUTES));
     }
 
     private List<Item> futureToListItem( List<Future<List<ItemPriceResponse>>> futureItems) {
@@ -76,18 +70,28 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
     }
 
 
-    private ItemsId getBatch(ItemsId itemsId) {
-        Set<String> batchResult = new HashSet<>();
+    private List<Callable<List<ItemPriceResponse>>> getBatchTask(ItemsId itemsId) {
+        List<Callable<List<ItemPriceResponse>>> newResult = new ArrayList<>();
+        List<String> batchResult = new ArrayList<>();
 
-        itemsId.getValue().stream()
-                .limit(SIZE_BATCH < itemsId.getValue().size() ? SIZE_BATCH: itemsId.getValue().size())
-                .forEach(batchResult::add);
+        int countGroups = 0;
+        for (String value : itemsId.getValue()) {
+            batchResult.add(value);
+            countGroups++;
 
-        itemsId.getValue().removeAll(batchResult);
+            if (countGroups == SIZE_BATCH) {
+                newResult.add(createTaskCallApi(new ItemsId(new HashSet<>(batchResult))));
+                batchResult.clear();
+                countGroups = 0;
+            }
+        }
 
-        return ItemsId.builder().value(batchResult).build();
+        if (!batchResult.isEmpty()) {
+            newResult.add(createTaskCallApi(new ItemsId(new HashSet<>(batchResult))));
+        }
+
+        return newResult;
     }
-
 
     /*public void test(){
 

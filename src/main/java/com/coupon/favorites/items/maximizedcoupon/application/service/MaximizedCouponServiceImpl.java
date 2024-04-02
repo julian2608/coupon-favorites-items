@@ -37,9 +37,7 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
     public Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest){
         ItemsId itemsId = couponRequest.getFavoritesItems();
 
-        synchronized (itemsId) {
-            publishEventCountFavorites(itemsId);
-        }
+        publisher.publishEvent(itemsId);
 
         List<Item> itemsPrice = getItemsPrice(itemsId);
 
@@ -49,16 +47,6 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
 
         return Either.right(resultSum);
     }
-
-    private void publishEventCountFavorites (ItemsId itemsId) {
-        ItemsId itemsIdCopy;
-
-        itemsIdCopy = new ItemsId(new HashSet<>(itemsId.getValue()));
-
-        publisher.publishEvent(itemsIdCopy);
-    }
-
-
 
     public MaximizeCouponResponse twoPointersApproach(List<Item> itemsPrice, double amountCoupon) {
         double closestSum = Double.MAX_VALUE;
