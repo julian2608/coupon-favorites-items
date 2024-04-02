@@ -1,13 +1,13 @@
-package com.coupon.favorites.items.tokenclientoauth2.application.service;
+package com.coupon.favorites.items.apimeli.application.service;
 
 import com.coupon.favorites.items.shared.config.RetrofitConfig;
-import com.coupon.favorites.items.shared.service.MeliPublicApiService;
+import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;
 import com.coupon.favorites.items.shared.util.ApiCallExecutor;
 import com.coupon.favorites.items.shared.util.RetryUtil;
-import com.coupon.favorites.items.tokenclientoauth2.domain.entity.TokenClientMem;
-import com.coupon.favorites.items.tokenclientoauth2.domain.entity.TokenClientRequest;
-import com.coupon.favorites.items.tokenclientoauth2.domain.entity.TokenClientResponse;
-import com.coupon.favorites.items.tokenclientoauth2.domain.service.TokenClientService;
+import com.coupon.favorites.items.apimeli.domain.entity.TokenClientMem;
+import com.coupon.favorites.items.apimeli.domain.entity.TokenClientRequest;
+import com.coupon.favorites.items.apimeli.domain.entity.TokenClientResponse;
+import com.coupon.favorites.items.apimeli.domain.service.TokenClientService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;

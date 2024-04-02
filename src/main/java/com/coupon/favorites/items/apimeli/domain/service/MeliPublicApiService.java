@@ -1,10 +1,8 @@
-package com.coupon.favorites.items.shared.service;
+package com.coupon.favorites.items.apimeli.domain.service;
 
 import com.coupon.favorites.items.itemsprice.domain.entity.ItemPriceResponse;
-import com.coupon.favorites.items.tokenclientoauth2.domain.entity.TokenClientRequest;
-import com.coupon.favorites.items.tokenclientoauth2.domain.entity.TokenClientResponse;
+import com.coupon.favorites.items.apimeli.domain.entity.TokenClientResponse;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.cache.annotation.Cacheable;
 import retrofit2.Call;
 import retrofit2.http.*;
 

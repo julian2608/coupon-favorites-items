@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.tokenclientoauth2.domain.entity;
+package com.coupon.favorites.items.apimeli.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

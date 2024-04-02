@@ -2,7 +2,7 @@ package com.coupon.favorites.items.maximizedcoupon.infrastructure.controllers;
 
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.usecase.MaximizeCouponUseCase;
-import com.coupon.favorites.items.tokenclientoauth2.domain.usecase.GetTokenExternalUseCase;
+import com.coupon.favorites.items.apimeli.domain.usecase.GetTokenExternalUseCase;
 import com.coupon.favorites.items.topfavorites.domain.usecase.GetTopFavoritesUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

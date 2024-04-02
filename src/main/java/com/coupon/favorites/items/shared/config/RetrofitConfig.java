@@ -1,8 +1,8 @@
 package com.coupon.favorites.items.shared.config;
 
 
-import com.coupon.favorites.items.shared.service.MeliPublicApiService;
-import com.coupon.favorites.items.tokenclientoauth2.domain.usecase.GetTokenExternalUseCase;
+import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;
+import com.coupon.favorites.items.apimeli.domain.usecase.GetTokenExternalUseCase;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

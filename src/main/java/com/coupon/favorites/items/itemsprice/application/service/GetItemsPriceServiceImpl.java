@@ -3,7 +3,7 @@ package com.coupon.favorites.items.itemsprice.application.service;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
 import com.coupon.favorites.items.itemsprice.domain.entity.ItemPriceResponse;
 import com.coupon.favorites.items.itemsprice.domain.service.GetItemsPriceService;
-import com.coupon.favorites.items.shared.service.MeliPublicApiService;
+import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import com.coupon.favorites.items.shared.util.ApiCallExecutorCallable;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 

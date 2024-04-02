@@ -1,7 +1,7 @@
-package com.coupon.favorites.items.tokenclientoauth2.application.usecase;
+package com.coupon.favorites.items.apimeli.application.usecase;
 
-import com.coupon.favorites.items.tokenclientoauth2.domain.service.TokenClientService;
-import com.coupon.favorites.items.tokenclientoauth2.domain.usecase.GetTokenExternalUseCase;
+import com.coupon.favorites.items.apimeli.domain.service.TokenClientService;
+import com.coupon.favorites.items.apimeli.domain.usecase.GetTokenExternalUseCase;
 
 public class GetTokenExternalUseCaseImpl implements GetTokenExternalUseCase {
 
