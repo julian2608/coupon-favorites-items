@@ -2,7 +2,6 @@ package com.coupon.favorites.items.maximizedcoupon.infrastructure.controllers;
 
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.usecase.MaximizeCouponUseCase;
-import com.coupon.favorites.items.apimeli.domain.usecase.GetTokenExternalUseCase;
 import com.coupon.favorites.items.topfavorites.domain.usecase.GetTopFavoritesUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,16 +19,12 @@ public class CouponController {
 
     private final GetTopFavoritesUseCase getTopFavoritesUseCase;
 
-    private final GetTokenExternalUseCase getTokenExternalUseCase;
-
     public CouponController(
             MaximizeCouponUseCase maximizeCouponUseCase,
-            GetTopFavoritesUseCase getTopFavoritesUseCase,
-            GetTokenExternalUseCase getTokenExternalUseCase
+            GetTopFavoritesUseCase getTopFavoritesUseCase
     ) {
         this.maximizeCouponUseCase = maximizeCouponUseCase;
         this.getTopFavoritesUseCase = getTopFavoritesUseCase;
-        this.getTokenExternalUseCase = getTokenExternalUseCase;
     }
 
     @PostMapping()
@@ -48,11 +43,5 @@ public class CouponController {
                 error -> ResponseEntity.status(error.getCode()).body(error),
                 ResponseEntity::ok
         );
-    }
-
-    @GetMapping("/token")
-    private ResponseEntity<Object> getToken(
-            ) {
-        return ResponseEntity.ok().body(getTokenExternalUseCase.getToken());
     }
 }

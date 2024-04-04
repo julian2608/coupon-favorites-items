@@ -8,8 +8,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import java.io.IOException;
-
 public class ApiCallExecutor {
     private ApiCallExecutor() {
         throw new IllegalStateException("ApiCallExecutor is a Utility class");

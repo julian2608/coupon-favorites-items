@@ -4,7 +4,6 @@ import com.coupon.favorites.items.topfavorites.domain.service.IncQuantityFavorit
 import com.coupon.favorites.items.topfavorites.domain.usecase.IncQuantityFavoritesUseCase;
 
 import java.util.Collection;
-import java.util.List;
 
 public class IncQuantityFavoritesUseCaseImpl implements IncQuantityFavoritesUseCase {
     private final IncQuantityFavoritesService incQuantityFavoritesService;

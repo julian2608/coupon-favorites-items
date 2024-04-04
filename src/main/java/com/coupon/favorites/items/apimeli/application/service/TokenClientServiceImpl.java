@@ -32,12 +32,11 @@ public class TokenClientServiceImpl implements TokenClientService {
     @Value("${oauth2.client.mercadolibre.redirect-uri}")
     private String redirectUri;
 
-    @Value("${app.meli.public.api}")
-    private String urlBaseToken;
+    private final static String URI_API_TOKEN = "https://api.mercadolibre.com/";
     private final MeliPublicApiService meliPublicApiService;
 
     public TokenClientServiceImpl() {
-        Retrofit retrofit = RetrofitConfig.getClient(urlBaseToken);
+        Retrofit retrofit = RetrofitConfig.getClient(URI_API_TOKEN);
         meliPublicApiService = retrofit.create(MeliPublicApiService.class);
     }
 

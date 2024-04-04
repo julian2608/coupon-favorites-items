@@ -20,16 +20,18 @@ import java.util.stream.Collectors;
 public class GetItemsPriceServiceImpl implements GetItemsPriceService {
     private final MeliPublicApiService meliPublicApiService;
 
-    private final static String ATTRIBUTES = "id,price";
+    private final String attributes;
 
-    private final int SIZE_BATCH;
+    private final int sizeBatch;
 
     public GetItemsPriceServiceImpl(
             MeliPublicApiService meliPublicApiService,
-            @Value("${app.meli.public.api.size-batch-item:20}") int SIZE_BATCH
+            @Value("${app.meli.public.api.size-batch-item:20}") int sizeBatch,
+            @Value("${app.meli.public.api.attributes_query}") String attributes
             ) {
         this.meliPublicApiService = meliPublicApiService;
-        this.SIZE_BATCH = SIZE_BATCH;
+        this.attributes = attributes;
+        this.sizeBatch = sizeBatch;
     }
 
     @Override
@@ -37,10 +39,9 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
         return Either.right(getItemPricesBatchAsync(itemsId));
     }
 
-    private List<Item> getItemPricesBatchAsync(ItemsId itemsId) {
+    public List<Item> getItemPricesBatchAsync(ItemsId itemsId) {
         try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
             List<Future<List<ItemPriceResponse>>> futures = executorService.invokeAll(getBatchTask(itemsId));
-
 
             executorService.shutdown();
         return futureToListItem(futures);
@@ -51,7 +52,7 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
     }
 
     private ApiCallExecutorCallable createTaskCallApi(ItemsId itemsId) {
-        return new ApiCallExecutorCallable<>(meliPublicApiService.getItemsPrice(itemsId.toQueryParam(), ATTRIBUTES));
+        return new ApiCallExecutorCallable<>(meliPublicApiService.getItemsPrice(itemsId.toQueryParam(), attributes));
     }
 
     private List<Item> futureToListItem( List<Future<List<ItemPriceResponse>>> futureItems) {
@@ -65,9 +66,9 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
         }
         return resultList.stream()
                 .map(ItemPriceResponse::getBody)
+                .filter(item -> item.getPrice() != null)
                 .collect(Collectors.toList());
     }
-
 
     private List<Callable<List<ItemPriceResponse>>> getBatchTask(ItemsId itemsId) {
         List<Callable<List<ItemPriceResponse>>> newResult = new ArrayList<>();
@@ -78,7 +79,7 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
             batchResult.add(value);
             countGroups++;
 
-            if (countGroups == SIZE_BATCH) {
+            if (countGroups == sizeBatch) {
                 newResult.add(createTaskCallApi(new ItemsId(new HashSet<>(batchResult))));
                 batchResult.clear();
                 countGroups = 0;
@@ -91,21 +92,4 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
 
         return newResult;
     }
-
-    /*public void test(){
-
-        for (int i = 0; i <= 400; i++) {
-            try {
-                JsonNode rootNode = ApiCallExecutor.execute(meliPublicApiService.getIds(i, "MCO1747"));
-                JsonNode resultsNode = rootNode.path("results");
-                for (JsonNode resultNode : resultsNode) {
-                    String id = resultNode.path("id").asText();
-                    System.out.println(id);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 }

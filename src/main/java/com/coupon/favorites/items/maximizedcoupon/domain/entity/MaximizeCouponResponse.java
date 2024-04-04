@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +18,6 @@ import java.util.List;
 public class MaximizeCouponResponse {
 
     private List<String> itemIds;
-
     private double total;
 
 }
