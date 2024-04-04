@@ -54,7 +54,7 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
 
         MaximizeCouponResponse resultSum = twoPointersApproach(itemsPrice, amountCoupon);
 
-        couponRequest.getFavoritesItems().setValue(null);
+        couponRequest.clear();
         return Either.right(resultSum);
     }
 

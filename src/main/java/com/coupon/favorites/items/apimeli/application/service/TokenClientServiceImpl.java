@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @Service
@@ -43,7 +44,7 @@ public class TokenClientServiceImpl implements TokenClientService {
     @Override
     public String getToken() {
         synchronized (TokenClientServiceImpl.class) {
-            if (TokenClientMem.getInstance() == null) {
+            if (Objects.isNull(TokenClientMem.getInstance())) {
                 TokenClientResponse token = getTokenApiExternal();
                 TokenClientMem.initialize(token);
             }

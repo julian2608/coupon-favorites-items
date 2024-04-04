@@ -34,7 +34,7 @@ public class CacheRepositoryImpl implements CacheRepository {
 
         List<Item> redisItems = redisTemplate.opsForValue().multiGet(ids);
 
-        if (redisItems != null) {
+        if (Objects.nonNull(redisItems)) {
             items = redisItems.stream().filter(Objects::nonNull).toList();
         }
 

@@ -23,4 +23,8 @@ public class ItemsId {
         return String.join(",", value);
     }
 
+    public void clear () {
+        this.value = null;
+    }
+
 }

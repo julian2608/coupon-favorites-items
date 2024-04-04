@@ -8,6 +8,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import java.util.Objects;
+
 public class ApiCallExecutor {
     private ApiCallExecutor() {
         throw new IllegalStateException("ApiCallExecutor is a Utility class");
@@ -32,8 +34,7 @@ public class ApiCallExecutor {
     private static String extractErrorMessage(final Response errorResponse) {
         ResponseBody errorBody = errorResponse.errorBody();
         try {
-            assert errorBody != null;
-            return errorBody.string().trim();
+            return Objects.nonNull(errorBody) ? errorBody.string().trim(): null;
         } catch (Exception ex) {
             return "Failed to get body. ["+ex.getCause()+"] ["+ ex.getMessage()+"]";
         }

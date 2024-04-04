@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
         }
         return resultList.stream()
                 .map(ItemPriceResponse::getBody)
-                .filter(item -> item.getPrice() != null)
+                .filter(item -> Objects.nonNull(item.getPrice()))
                 .collect(Collectors.toList());
     }
 

@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.time.Duration;
+import java.util.Objects;
 
 @Configuration
 public class RetrofitConfig {
@@ -73,7 +74,7 @@ public class RetrofitConfig {
     }
 
     public static Retrofit getClient(final String uri) {
-        if (retrofit == null) {
+        if (Objects.isNull(retrofit)) {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
             retrofit = new Retrofit.Builder()

@@ -42,5 +42,7 @@ public class MaximizeCouponEntity {
                 .build();
     }
 
-
+    public void clear () {
+        this.favoritesItems.clear();
+    }
 }

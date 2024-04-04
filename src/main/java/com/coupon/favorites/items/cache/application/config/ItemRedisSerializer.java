@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
+import java.util.Objects;
+
 public class ItemRedisSerializer implements RedisSerializer<Item> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -13,7 +15,7 @@ public class ItemRedisSerializer implements RedisSerializer<Item> {
     @Override
     public byte[] serialize(Item item) throws SerializationException {
         try {
-            if (item.getId() == null || item.getPrice() == null) {
+            if (Objects.isNull(item.getId()) || Objects.isNull(item.getPrice())) {
                 return null;
             }
             return objectMapper.writeValueAsBytes(item);
@@ -25,7 +27,7 @@ public class ItemRedisSerializer implements RedisSerializer<Item> {
     @Override
     public Item deserialize(byte[] bytes) throws SerializationException {
         try {
-            return bytes == null ? null : objectMapper.readValue(bytes, Item.class);
+            return Objects.isNull(bytes) ? null : objectMapper.readValue(bytes, Item.class);
         } catch (Exception e) {
             throw new SerializationException(ErrorItemsPrice.errorDeserializerItem().getMessage(), e);
         }

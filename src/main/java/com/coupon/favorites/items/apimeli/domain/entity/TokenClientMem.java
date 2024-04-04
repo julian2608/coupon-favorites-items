@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Builder
 @Data
@@ -47,6 +48,6 @@ public class TokenClientMem {
     }
 
     public synchronized boolean isTokenValid() {
-        return expirationTime != null && expirationTime.isAfter(Instant.now());
+        return Objects.nonNull(expirationTime) && expirationTime.isAfter(Instant.now());
     }
 }
