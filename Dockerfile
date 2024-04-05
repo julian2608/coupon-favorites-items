@@ -20,7 +20,5 @@ WORKDIR /code/coupon-favorites-items
 
 RUN ./mvnw package -DskipTests
 
-WORKDIR /code/coupon-favorites-items/target
-
 EXPOSE 8080
-CMD ["java", "-jar", "target/Coupon-Favorites-Items-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/coupon-favorites-items-0.0.1-SNAPSHOT.jar"]
