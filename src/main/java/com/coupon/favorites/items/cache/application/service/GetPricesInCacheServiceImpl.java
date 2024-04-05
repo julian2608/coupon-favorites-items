@@ -16,6 +16,10 @@ public class GetPricesInCacheServiceImpl implements GetPricesInCacheService {
     }
     @Override
     public List<Item> getPriceItemsByIds(List<String> ids) {
-        return cacheRepository.getPriceItemsByIds(ids);
+        try {
+            return cacheRepository.getPriceItemsByIds(ids);
+        } catch (Exception e) {
+            return List.of();
+        }
     }
 }

@@ -45,8 +45,8 @@ public class GetItemsPriceServiceImpl implements GetItemsPriceService {
             List<Future<List<ItemPriceResponse>>> futures = executorService.invokeAll(getBatchTask(itemsId));
 
             executorService.shutdown();
-        return futureToListItem(futures);
 
+            return futureToListItem(futures);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

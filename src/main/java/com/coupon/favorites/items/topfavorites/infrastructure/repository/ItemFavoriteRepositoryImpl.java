@@ -1,8 +1,12 @@
 package com.coupon.favorites.items.topfavorites.infrastructure.repository;
 
+import com.coupon.favorites.items.topfavorites.domain.entity.ErrorFavorites;
 import com.coupon.favorites.items.topfavorites.domain.entity.ItemFavorite;
 import com.coupon.favorites.items.topfavorites.domain.service.ItemFavoriteRepository;
+import com.mongodb.MongoException;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -25,6 +29,8 @@ public class ItemFavoriteRepositoryImpl implements ItemFavoriteRepository {
     private final String nameFieldId;
     private final String nameFieldQuantity;
 
+    private static final Logger logger = LoggerFactory.getLogger(ItemFavoriteRepositoryImpl.class);
+
 
     public ItemFavoriteRepositoryImpl(
             MongoTemplate mongoTemplate,
@@ -46,24 +52,33 @@ public class ItemFavoriteRepositoryImpl implements ItemFavoriteRepository {
     @Override
     public void incrementQuantity(Collection<String> itemFavorites) {
         CompletableFuture.runAsync(() -> {
-            BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, ItemFavorite.class);
+            try {
+                BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, ItemFavorite.class);
 
-            for (String itemId : itemFavorites) {
-                Query query = new Query(Criteria.where(nameFieldId).is(itemId));
-                Update update = new Update().inc(nameFieldQuantity, 1);
-                bulkOps.upsert(query, update);
+                for (String itemId : itemFavorites) {
+                    Query query = new Query(Criteria.where(nameFieldId).is(itemId));
+                    Update update = new Update().inc(nameFieldQuantity, 1);
+                    bulkOps.upsert(query, update);
+                }
+                bulkOps.execute();
+            }catch (Exception e){
+                logger.error(ErrorFavorites.ErrorUpdateFavorites.getMessage(), e);
             }
-            bulkOps.execute();
         });
     }
 
     @Override
     public List<ItemFavorite> getTopFavorites(int maxTop) {
-        Query query = new Query();
-        query.limit(maxTop);
-        query.with(Sort.by(Sort.Direction.DESC, nameFieldQuantity));
+        try {
+            Query query = new Query();
+            query.limit(maxTop);
+            query.with(Sort.by(Sort.Direction.DESC, nameFieldQuantity));
 
-        return mongoTemplate.find(query, ItemFavorite.class, nameCollection);
+            return mongoTemplate.find(query, ItemFavorite.class, nameCollection);
+        }catch (Exception e){
+            logger.error(ErrorFavorites.ErrorGettingFavorites.getMessage(), e);
+            return List.of();
+        }
     }
 
     private void createIndex(){

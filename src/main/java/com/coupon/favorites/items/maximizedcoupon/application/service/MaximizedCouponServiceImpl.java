@@ -9,14 +9,11 @@ import com.coupon.favorites.items.maximizedcoupon.domain.service.MaximizeCouponS
 import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.vavr.control.Either;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,22 +40,25 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
     }
 
     @Override
-    public Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest) throws JsonProcessingException {
-        ItemsId itemsId = couponRequest.getFavoritesItems();
+    public Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest){
+        try {
+            double amountCoupon = couponRequest.getCoupon().getValue();
+            ItemsId itemsId = couponRequest.getFavoritesItems();
 
-        publisher.publishEvent(itemsId);
+            publisher.publishEvent(itemsId);
 
-        List<Item> itemsPrice = getItemsPrice(itemsId);
+            List<Item> itemsPrice = getItemsPrice(itemsId);
 
-        double amountCoupon = couponRequest.getCoupon().getValue();
+            MaximizeCouponResponse resultSum = twoPointersApproach(itemsPrice, amountCoupon);
 
-        MaximizeCouponResponse resultSum = twoPointersApproach(itemsPrice, amountCoupon);
-
-        couponRequest.clear();
-        return Either.right(resultSum);
+            couponRequest.clear();
+            return Either.right(resultSum);
+        }catch (Exception e) {
+            return Either.left(ErrorCoupon.ErrorMaximizedCoupon(e.getMessage()));
+        }
     }
 
-    public MaximizeCouponResponse twoPointersApproach(List<Item> itemsPrice, double amountCoupon) {
+    private MaximizeCouponResponse twoPointersApproach(List<Item> itemsPrice, double amountCoupon) {
         double closestSum = Double.MAX_VALUE;
         List<Item> closestItems = new ArrayList<>();
 
@@ -145,3 +145,4 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
         );
     }
 }
+

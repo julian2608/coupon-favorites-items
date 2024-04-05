@@ -28,4 +28,6 @@ public class ErrorFavorites {
             .code(HttpStatus.NOT_FOUND)
             .message("Favorite items not found.")
             .build();
+
+
 }

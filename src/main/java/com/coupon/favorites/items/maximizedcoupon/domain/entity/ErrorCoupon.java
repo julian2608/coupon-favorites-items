@@ -18,4 +18,34 @@ public class ErrorCoupon {
             .code(HttpStatus.FAILED_DEPENDENCY)
             .message("Error getting prices of items for maximize coupon.")
             .build();
+
+    public static ErrorCoupon ErrorValueCouponDecimals
+            = ErrorCoupon
+            .builder()
+            .code(HttpStatus.BAD_REQUEST)
+            .message("The coupon amount can only have 2 decimals.")
+            .build();
+
+    public static ErrorCoupon ErrorValueCouponMin
+            = ErrorCoupon
+            .builder()
+            .code(HttpStatus.BAD_REQUEST)
+            .message("The coupon amount must be greater than 0.")
+            .build();
+
+    public static ErrorCoupon ErrorMaximizedCoupon(final String message) {
+        return ErrorCoupon
+                .builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message(message)
+                .build();
+    }
+
+    public static ErrorCoupon ErrorEmptyList
+            = ErrorCoupon
+            .builder()
+            .code(HttpStatus.BAD_REQUEST)
+            .message("Empty list of items")
+            .build();
+
 }

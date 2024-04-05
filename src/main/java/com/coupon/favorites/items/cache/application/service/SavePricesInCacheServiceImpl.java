@@ -17,6 +17,10 @@ public class SavePricesInCacheServiceImpl implements SavePricesInCacheService {
     }
     @Override
     public void savePriceItems(Collection<Item> ids) {
-        cacheRepository.savePriceItems(ids);
+        try {
+            cacheRepository.savePriceItems(ids);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
