@@ -2,15 +2,15 @@ package com.coupon.favorites.items.maximizedcoupon.application.service;
 
 import com.coupon.favorites.items.cache.domain.usecase.GetPricesInCacheUseCase;
 import com.coupon.favorites.items.cache.domain.usecase.SavePricesInCacheUseCase;
+import com.coupon.favorites.items.cache.infrastructure.CacheRepositoryImpl;
 import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
-import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponResponse;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Coupon;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
+import com.mongodb.MongoException;
 import io.vavr.control.Either;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class MaximizedCouponServiceImplTest {
@@ -35,6 +36,8 @@ class MaximizedCouponServiceImplTest {
     private GetPricesInCacheUseCase getPricesInCacheUseCase;
     @Mock
     private ApplicationEventPublisher publisher;
+    @Mock
+    private CacheRepositoryImpl cacheRepository;
     private MaximizeCouponEntity maximizeCouponEntity;
 
     private Set<String> itemIds;
@@ -89,7 +92,7 @@ class MaximizedCouponServiceImplTest {
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(getItemsPriceUseCase, times(1)).execute(any());
 
-        Assertions.assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
+        assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
 
     }
 
@@ -114,7 +117,7 @@ class MaximizedCouponServiceImplTest {
         verify(savePricesInCacheUseCase, times(0)).execute(any());
         verify(getItemsPriceUseCase, times(0)).execute(any());
 
-        Assertions.assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
+        assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
 
     }
 
@@ -146,8 +149,82 @@ class MaximizedCouponServiceImplTest {
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(getItemsPriceUseCase, times(1)).execute(any());
 
-        Assertions.assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
-        Assertions.assertEquals(3, capturedArgument.getValue().size());
+        assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
+        assertEquals(3, capturedArgument.getValue().size());
+
+    }
+
+    @Test
+    public void maximized_Coupon_When_Result_Is_Exact() {
+        itemsPrice = List.of(
+                new Item("MCO32175689", 50.0),
+                new Item("MCO543789", 200.0),
+                new Item("MCO4354765", 100.0),
+                new Item("MCO4326525", 50.0),
+                new Item("MCO432765", 130.0));
+
+        when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
+                new ArrayList<>());
+
+        when(getItemsPriceUseCase.execute(itemsIdValueObject)).thenReturn(
+                Either.right(itemsPrice));
+
+        doNothing().when(publisher)
+                .publishEvent(itemsIdValueObject);
+
+        doNothing().when(savePricesInCacheUseCase)
+                .execute(itemsPrice);
+
+
+        MaximizeCouponResponse response = (MaximizeCouponResponse) maximizedCouponService.maximizeCoupon(maximizeCouponEntity).fold(
+                error -> error,
+                result -> result
+        );
+
+        verify(savePricesInCacheUseCase, times(1)).execute(any());
+        verify(getPricesInCacheUseCase, times(1)).execute(any());
+        verify(getItemsPriceUseCase, times(1)).execute(any());
+
+        assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
+        assertEquals(maximizeCouponEntity.getCoupon().getValue(), response.getTotal());
+
+    }
+
+
+    @Test
+    public void maximized_Coupon_When_Result_Is_Not_Exact() {
+        itemsPrice = List.of(
+                new Item("MCO32175689", 50.0),
+                new Item("MCO543789", 200.0),
+                new Item("MCO432765", 130.0),
+                new Item("MCO4354765", 100.0),
+                new Item("MCO4326525", 50.0)
+        );
+
+        when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
+                new ArrayList<>());
+
+        when(getItemsPriceUseCase.execute(itemsIdValueObject)).thenReturn(
+                Either.right(itemsPrice));
+
+        doNothing().when(publisher)
+                .publishEvent(itemsIdValueObject);
+
+        doNothing().when(savePricesInCacheUseCase)
+                .execute(itemsPrice);
+
+
+        MaximizeCouponResponse response = (MaximizeCouponResponse) maximizedCouponService.maximizeCoupon(maximizeCouponEntity).fold(
+                error -> error,
+                result -> result
+        );
+
+        verify(savePricesInCacheUseCase, times(1)).execute(any());
+        verify(getPricesInCacheUseCase, times(1)).execute(any());
+        verify(getItemsPriceUseCase, times(1)).execute(any());
+
+        assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
+        assertNotEquals(maximizeCouponEntity.getCoupon().getValue(), response.getTotal());
 
     }
 }
