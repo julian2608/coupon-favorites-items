@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.coupon.favorites.items</groupId>
-	<artifactId>Coupon-Favorites-Items</artifactId>
+	<artifactId>coupon-favorites-items</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Coupon-Favorites-Items</name>
+	<name>coupon-favorites-items</name>
 	<description>API of coupons for buys favorites items</description>
 	<properties>
 		<java.version>21</java.version>
