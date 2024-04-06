@@ -16,7 +16,6 @@ public class TokenClientMem {
     private int expiresIn;
     private String scope;
     private int userId;
-    private String refreshToken;
     private Instant expirationTime;
 
     public static synchronized TokenClientMem getInstance() {
@@ -31,7 +30,6 @@ public class TokenClientMem {
                 .expiresIn(tokenResponse.getExpiresIn())
                 .scope(tokenResponse.getScope())
                 .userId(tokenResponse.getUserId())
-                .refreshToken(tokenResponse.getRefreshToken())
                 .expirationTime(Instant.now().plusSeconds(tokenResponse.getExpiresIn()))
                 .build();
     }
@@ -42,7 +40,6 @@ public class TokenClientMem {
         this.expiresIn = newTokenResponse.getExpiresIn();
         this.scope = newTokenResponse.getScope();
         this.userId = newTokenResponse.getUserId();
-        this.refreshToken = newTokenResponse.getRefreshToken();
         this.expirationTime = Instant.now().plusSeconds(newTokenResponse.getExpiresIn());
 
     }

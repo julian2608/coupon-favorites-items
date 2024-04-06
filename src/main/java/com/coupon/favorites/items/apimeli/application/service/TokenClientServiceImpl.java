@@ -27,12 +27,6 @@ public class TokenClientServiceImpl implements TokenClientService {
     @Value("${oauth2.client.mercadolibre.client-secret}")
     private String clientSecret;
 
-    @Value("${oauth2.client.mercadolibre.code-authorization}")
-    private String code;
-
-    @Value("${oauth2.client.mercadolibre.redirect-uri}")
-    private String redirectUri;
-
     private final static String URI_API_TOKEN = "https://api.mercadolibre.com/";
     private final MeliPublicApiService meliPublicApiService;
 
@@ -49,7 +43,7 @@ public class TokenClientServiceImpl implements TokenClientService {
                 TokenClientMem.initialize(token);
             }
             if (!TokenClientMem.getInstance().isTokenValid()) {
-                TokenClientResponse newToken = refreshTokenApiExternal();
+                TokenClientResponse newToken = getTokenApiExternal();
                 TokenClientMem.getInstance().updateToken(newToken);
             }
             return TokenClientMem.getInstance().getAccessToken();
@@ -57,16 +51,7 @@ public class TokenClientServiceImpl implements TokenClientService {
     }
 
     private TokenClientResponse getTokenApiExternal() {
-        Supplier<TokenClientResponse> getToken = () -> ApiCallExecutor.execute(meliPublicApiService.getToken(grantType, clientId, clientSecret, code, redirectUri));
-
-        return RetryUtil.retryApiCallFunction(getToken);
-    }
-
-    private TokenClientResponse refreshTokenApiExternal() {
-        TokenClientRequest tokenClientRequest = new TokenClientRequest(grantType, clientId, clientSecret, code, redirectUri);
-        tokenClientRequest.clearToRefreshToken();
-
-        Supplier<TokenClientResponse> getToken = () -> ApiCallExecutor.execute(meliPublicApiService.refreshToken("refresh_token", clientId, clientSecret, TokenClientMem.getInstance().getRefreshToken()));
+        Supplier<TokenClientResponse> getToken = () -> ApiCallExecutor.execute(meliPublicApiService.getToken(grantType, clientId, clientSecret));
 
         return RetryUtil.retryApiCallFunction(getToken);
     }

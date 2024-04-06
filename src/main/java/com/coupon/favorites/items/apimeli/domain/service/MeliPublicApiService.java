@@ -23,9 +23,7 @@ public interface MeliPublicApiService {
     Call<TokenClientResponse> getToken(
             @Field("grant_type") String grantType,
             @Field("client_id") String clientId,
-            @Field("client_secret") String clientSecret,
-            @Field("code") String code,
-            @Field("redirect_uri") String redirectUri
+            @Field("client_secret") String clientSecret
     );
 
     @POST("oauth/token")
