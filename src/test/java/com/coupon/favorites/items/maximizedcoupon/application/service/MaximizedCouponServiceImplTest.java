@@ -2,14 +2,14 @@ package com.coupon.favorites.items.maximizedcoupon.application.service;
 
 import com.coupon.favorites.items.cache.domain.usecase.GetPricesInCacheUseCase;
 import com.coupon.favorites.items.cache.domain.usecase.SavePricesInCacheUseCase;
-import com.coupon.favorites.items.cache.infrastructure.CacheRepositoryImpl;
 import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponResponse;
+import com.coupon.favorites.items.maximizedcoupon.domain.event.IncCountFavoritesValueEvent;
+import com.coupon.favorites.items.maximizedcoupon.domain.event.SaveCachePricesValueEvent;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Coupon;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
-import com.mongodb.MongoException;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,21 +36,17 @@ class MaximizedCouponServiceImplTest {
     private GetPricesInCacheUseCase getPricesInCacheUseCase;
     @Mock
     private ApplicationEventPublisher publisher;
-    @Mock
-    private CacheRepositoryImpl cacheRepository;
     private MaximizeCouponEntity maximizeCouponEntity;
 
     private Set<String> itemIds;
 
     private List<Item> itemsPrice;
 
-    private ItemsId itemsIdValueObject;
 
     @BeforeEach
     public void init (){
         itemIds = new HashSet<>(new ArrayList<>(List.of("MCO32175689","MCO543789","MCO432765","MCO4354765","MCO4326525")));
 
-        itemsIdValueObject = ItemsId.builder().value(itemIds).build();
 
         itemsPrice = List.of(
                 new Item("MCO32175689", 240.0),
@@ -62,7 +58,7 @@ class MaximizedCouponServiceImplTest {
         maximizeCouponEntity = MaximizeCouponEntity
                 .builder()
                 .coupon(Coupon.builder().value(400).build())
-                .favoritesItems(itemsIdValueObject)
+                .favoritesItems(new ItemsId(itemIds))
                 .build();
 
         MockitoAnnotations.openMocks(this);
@@ -73,11 +69,14 @@ class MaximizedCouponServiceImplTest {
         when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
                 new ArrayList<>());
 
-        when(getItemsPriceUseCase.execute(itemsIdValueObject)).thenReturn(
+        when(getItemsPriceUseCase.execute(itemIds)).thenReturn(
                 Either.right(itemsPrice));
 
         doNothing().when(publisher)
-                .publishEvent(itemsIdValueObject);
+                .publishEvent(any(SaveCachePricesValueEvent.class));
+
+        doNothing().when(publisher)
+                .publishEvent(any(IncCountFavoritesValueEvent.class));
 
         doNothing().when(savePricesInCacheUseCase)
                 .execute(itemsPrice);
@@ -88,7 +87,8 @@ class MaximizedCouponServiceImplTest {
                 result -> result
         );
 
-        verify(savePricesInCacheUseCase, times(1)).execute(any());
+        verify(publisher, times(1)).publishEvent(any(SaveCachePricesValueEvent.class));
+        verify(publisher, times(1)).publishEvent(any(IncCountFavoritesValueEvent.class));
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(getItemsPriceUseCase, times(1)).execute(any());
 
@@ -102,7 +102,10 @@ class MaximizedCouponServiceImplTest {
                 itemsPrice);
 
         doNothing().when(publisher)
-                .publishEvent(itemsIdValueObject);
+                .publishEvent(any(SaveCachePricesValueEvent.class));
+
+        doNothing().when(publisher)
+                .publishEvent(any(IncCountFavoritesValueEvent.class));
 
         doNothing().when(savePricesInCacheUseCase)
                 .execute(itemsPrice);
@@ -113,6 +116,8 @@ class MaximizedCouponServiceImplTest {
                 result -> result
         );
 
+        verify(publisher, times(0)).publishEvent(any(SaveCachePricesValueEvent.class));
+        verify(publisher, times(1)).publishEvent(any(IncCountFavoritesValueEvent.class));
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(savePricesInCacheUseCase, times(0)).execute(any());
         verify(getItemsPriceUseCase, times(0)).execute(any());
@@ -123,7 +128,7 @@ class MaximizedCouponServiceImplTest {
 
     @Test
     public void maximized_Coupon_When_Cached_Partial_Prices() {
-        ArgumentCaptor<ItemsId> captorItemsId = ArgumentCaptor.forClass(ItemsId.class);
+        ArgumentCaptor<Set<String>> captorItemsId = ArgumentCaptor.forClass(Set.class);
 
         when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
                 itemsPrice.subList(0, 2));
@@ -132,7 +137,10 @@ class MaximizedCouponServiceImplTest {
                 .thenReturn(Either.right(itemsPrice));
 
         doNothing().when(publisher)
-                .publishEvent(any());
+                .publishEvent(any(SaveCachePricesValueEvent.class));
+
+        doNothing().when(publisher)
+                .publishEvent(any(IncCountFavoritesValueEvent.class));
 
         doNothing().when(savePricesInCacheUseCase)
                 .execute(itemsPrice);
@@ -143,14 +151,15 @@ class MaximizedCouponServiceImplTest {
                 result -> result
         );
 
-        ItemsId capturedArgument = captorItemsId.getValue();
+        Set<String> capturedArgument = captorItemsId.getValue();
 
-        verify(savePricesInCacheUseCase, times(1)).execute(any());
+        verify(publisher, times(1)).publishEvent(any(SaveCachePricesValueEvent.class));
+        verify(publisher, times(1)).publishEvent(any(IncCountFavoritesValueEvent.class));
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(getItemsPriceUseCase, times(1)).execute(any());
 
         assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
-        assertEquals(3, capturedArgument.getValue().size());
+        assertEquals(3, capturedArgument.size());
 
     }
 
@@ -166,11 +175,14 @@ class MaximizedCouponServiceImplTest {
         when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
                 new ArrayList<>());
 
-        when(getItemsPriceUseCase.execute(itemsIdValueObject)).thenReturn(
+        when(getItemsPriceUseCase.execute(itemIds)).thenReturn(
                 Either.right(itemsPrice));
 
         doNothing().when(publisher)
-                .publishEvent(itemsIdValueObject);
+                .publishEvent(any(SaveCachePricesValueEvent.class));
+
+        doNothing().when(publisher)
+                .publishEvent(any(IncCountFavoritesValueEvent.class));
 
         doNothing().when(savePricesInCacheUseCase)
                 .execute(itemsPrice);
@@ -181,7 +193,8 @@ class MaximizedCouponServiceImplTest {
                 result -> result
         );
 
-        verify(savePricesInCacheUseCase, times(1)).execute(any());
+        verify(publisher, times(1)).publishEvent(any(SaveCachePricesValueEvent.class));
+        verify(publisher, times(1)).publishEvent(any(IncCountFavoritesValueEvent.class));
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(getItemsPriceUseCase, times(1)).execute(any());
 
@@ -204,11 +217,14 @@ class MaximizedCouponServiceImplTest {
         when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
                 new ArrayList<>());
 
-        when(getItemsPriceUseCase.execute(itemsIdValueObject)).thenReturn(
+        when(getItemsPriceUseCase.execute(itemIds)).thenReturn(
                 Either.right(itemsPrice));
 
         doNothing().when(publisher)
-                .publishEvent(itemsIdValueObject);
+                .publishEvent(any(SaveCachePricesValueEvent.class));
+
+        doNothing().when(publisher)
+                .publishEvent(any(IncCountFavoritesValueEvent.class));
 
         doNothing().when(savePricesInCacheUseCase)
                 .execute(itemsPrice);
@@ -219,7 +235,8 @@ class MaximizedCouponServiceImplTest {
                 result -> result
         );
 
-        verify(savePricesInCacheUseCase, times(1)).execute(any());
+        verify(publisher, times(1)).publishEvent(any(SaveCachePricesValueEvent.class));
+        verify(publisher, times(1)).publishEvent(any(IncCountFavoritesValueEvent.class));
         verify(getPricesInCacheUseCase, times(1)).execute(any());
         verify(getItemsPriceUseCase, times(1)).execute(any());
 

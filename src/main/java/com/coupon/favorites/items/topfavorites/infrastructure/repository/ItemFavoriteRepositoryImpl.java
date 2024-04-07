@@ -3,7 +3,6 @@ package com.coupon.favorites.items.topfavorites.infrastructure.repository;
 import com.coupon.favorites.items.topfavorites.domain.entity.ErrorFavorites;
 import com.coupon.favorites.items.topfavorites.domain.entity.ItemFavorite;
 import com.coupon.favorites.items.topfavorites.domain.service.ItemFavoriteRepository;
-import com.mongodb.MongoException;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

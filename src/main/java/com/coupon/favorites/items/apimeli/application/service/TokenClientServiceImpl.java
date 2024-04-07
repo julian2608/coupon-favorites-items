@@ -5,7 +5,6 @@ import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;
 import com.coupon.favorites.items.shared.util.ApiCallExecutor;
 import com.coupon.favorites.items.shared.util.RetryUtil;
 import com.coupon.favorites.items.apimeli.domain.entity.TokenClientMem;
-import com.coupon.favorites.items.apimeli.domain.entity.TokenClientRequest;
 import com.coupon.favorites.items.apimeli.domain.entity.TokenClientResponse;
 import com.coupon.favorites.items.apimeli.domain.service.TokenClientService;
 import org.springframework.beans.factory.annotation.Value;

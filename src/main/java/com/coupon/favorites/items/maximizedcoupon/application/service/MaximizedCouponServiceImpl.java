@@ -1,14 +1,14 @@
 package com.coupon.favorites.items.maximizedcoupon.application.service;
 
 import com.coupon.favorites.items.cache.domain.usecase.GetPricesInCacheUseCase;
-import com.coupon.favorites.items.cache.domain.usecase.SavePricesInCacheUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponResponse;
+import com.coupon.favorites.items.maximizedcoupon.domain.event.IncCountFavoritesValueEvent;
+import com.coupon.favorites.items.maximizedcoupon.domain.event.SaveCachePricesValueEvent;
 import com.coupon.favorites.items.maximizedcoupon.domain.service.MaximizeCouponService;
 import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
 import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
-import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.ItemsId;
 import io.vavr.control.Either;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,6 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
 
     private final GetItemsPriceUseCase getItemsPriceUseCase;
 
-    private final SavePricesInCacheUseCase savePricesInCacheUseCase;
-
     private final GetPricesInCacheUseCase getPricesInCacheUseCase;
 
     private final ApplicationEventPublisher publisher;
@@ -30,12 +28,10 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
     public MaximizedCouponServiceImpl(
             GetItemsPriceUseCase getItemsPriceUseCase,
             ApplicationEventPublisher publisher,
-            SavePricesInCacheUseCase savePricesInCacheUseCase,
             GetPricesInCacheUseCase getPricesInCacheUseCase
     ) {
         this.getItemsPriceUseCase = getItemsPriceUseCase;
         this.publisher = publisher;
-        this.savePricesInCacheUseCase = savePricesInCacheUseCase;
         this.getPricesInCacheUseCase = getPricesInCacheUseCase;
     }
 
@@ -43,9 +39,9 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
     public Either<ErrorCoupon, MaximizeCouponResponse> maximizeCoupon(MaximizeCouponEntity couponRequest){
         try {
             double amountCoupon = couponRequest.getCoupon().getValue();
-            ItemsId itemsId = couponRequest.getFavoritesItems();
+            Set<String> itemsId = couponRequest.getFavoritesItems().getValue();
 
-            publisher.publishEvent(itemsId);
+            publisher.publishEvent(IncCountFavoritesValueEvent.builder().itemsId(itemsId).build());
 
             List<Item> itemsPrice = getItemsPrice(itemsId);
 
@@ -94,13 +90,13 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
                 .build();
     }
 
-    private List<Item> getItemsPrice(ItemsId itemsId) {
+    private List<Item> getItemsPrice(Set<String> itemsId) {
 
-        List<Item> itemsPriceInCache = getPricesCache(itemsId.getValue());
+        List<Item> itemsPriceInCache = getPricesCache(itemsId);
 
         List<Item> result = new ArrayList<>(itemsPriceInCache);
 
-        if (itemsId.getValue().size() == itemsPriceInCache.size()) {
+        if (itemsId.size() == itemsPriceInCache.size()) {
             return itemsPriceInCache;
         }
 
@@ -110,14 +106,14 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
 
         result.addAll(itemsPriceObtained);
 
-        savePricesInCacheUseCase.execute(itemsPriceObtained);
+        publisher.publishEvent(SaveCachePricesValueEvent.builder().items(itemsPriceObtained).build());
 
         return result;
     }
 
-    private Set<String> getPricesNotCached (List<Item> itemsPriceInCache , ItemsId itemsId)
+    private Set<String> getPricesNotCached (List<Item> itemsPriceInCache , Set<String> itemsId)
     {
-        Set<String> itemsIdNotInCache = new HashSet<>(itemsId.getValue());
+        Set<String> itemsIdNotInCache = new HashSet<>(itemsId);
 
         for (Item item : itemsPriceInCache) {
             itemsIdNotInCache.remove(item.getId());
@@ -136,7 +132,7 @@ public class MaximizedCouponServiceImpl implements MaximizeCouponService {
     }
 
     private List<Item> getPricesCallingApi (Set<String> itemsIdNotInCache){
-        return getItemsPriceUseCase.execute(new ItemsId(itemsIdNotInCache)).fold(
+        return getItemsPriceUseCase.execute(itemsIdNotInCache).fold(
                 error -> {
                     throw new RuntimeException(
                             String.format("Detail: %s. Code status: %s",error.getMessage(), error.getCode().value()));
