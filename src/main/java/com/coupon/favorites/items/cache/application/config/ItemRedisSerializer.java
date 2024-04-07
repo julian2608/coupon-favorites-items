@@ -1,7 +1,7 @@
 package com.coupon.favorites.items.cache.application.config;
 
-import com.coupon.favorites.items.itemsprice.domain.entity.ErrorItemsPrice;
-import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
+import com.coupon.favorites.items.item.domain.entity.ErrorItem;
+import com.coupon.favorites.items.coupon.domain.valueobject.Item;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
@@ -20,7 +20,7 @@ public class ItemRedisSerializer implements RedisSerializer<Item> {
             }
             return objectMapper.writeValueAsBytes(item);
         } catch (Exception e) {
-            throw new SerializationException(ErrorItemsPrice.errorSerializerItem().getMessage(), e);
+            throw new SerializationException(ErrorItem.errorSerializerItem().getMessage(), e);
         }
     }
 
@@ -29,7 +29,7 @@ public class ItemRedisSerializer implements RedisSerializer<Item> {
         try {
             return Objects.isNull(bytes) ? null : objectMapper.readValue(bytes, Item.class);
         } catch (Exception e) {
-            throw new SerializationException(ErrorItemsPrice.errorDeserializerItem().getMessage(), e);
+            throw new SerializationException(ErrorItem.errorDeserializerItem().getMessage(), e);
         }
     }
 }

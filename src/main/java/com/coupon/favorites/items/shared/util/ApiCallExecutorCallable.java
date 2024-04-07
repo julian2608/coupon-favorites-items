@@ -1,7 +1,6 @@
 package com.coupon.favorites.items.shared.util;
 
 
-import com.coupon.favorites.items.shared.ApiCallException;
 import okhttp3.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;

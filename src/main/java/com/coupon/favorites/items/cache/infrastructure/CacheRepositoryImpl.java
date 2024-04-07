@@ -1,7 +1,7 @@
 package com.coupon.favorites.items.cache.infrastructure;
 
 import com.coupon.favorites.items.cache.domain.service.CacheRepository;
-import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
+import com.coupon.favorites.items.coupon.domain.valueobject.Item;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;

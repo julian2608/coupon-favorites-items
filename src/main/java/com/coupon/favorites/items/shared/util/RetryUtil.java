@@ -3,7 +3,6 @@ package com.coupon.favorites.items.shared.util;
 import java.time.Duration;
 import java.util.function.Supplier;
 
-import com.coupon.favorites.items.shared.ApiCallException;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;

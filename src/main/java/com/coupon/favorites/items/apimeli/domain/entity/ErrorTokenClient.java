@@ -1,6 +1,6 @@
 package com.coupon.favorites.items.apimeli.domain.entity;
 
-import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
+import com.coupon.favorites.items.coupon.domain.entity.ErrorCoupon;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

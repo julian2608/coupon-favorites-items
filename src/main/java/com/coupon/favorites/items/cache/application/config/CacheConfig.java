@@ -1,6 +1,6 @@
 package com.coupon.favorites.items.cache.application.config;
 
-import com.coupon.favorites.items.maximizedcoupon.domain.valueobject.Item;
+import com.coupon.favorites.items.coupon.domain.valueobject.Item;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

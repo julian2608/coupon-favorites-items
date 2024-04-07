@@ -2,8 +2,8 @@ package com.coupon.favorites.items.cache.application.listener;
 
 
 import com.coupon.favorites.items.cache.domain.usecase.SavePricesInCacheUseCase;
-import com.coupon.favorites.items.maximizedcoupon.domain.event.SaveCachePricesEvent;
-import com.coupon.favorites.items.maximizedcoupon.domain.event.SaveCachePricesValueEvent;
+import com.coupon.favorites.items.coupon.domain.event.SaveCachePricesEvent;
+import com.coupon.favorites.items.coupon.domain.event.SaveCachePricesValueEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
