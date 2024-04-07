@@ -3,6 +3,7 @@ package com.coupon.favorites.items.maximizedcoupon.application.service;
 import com.coupon.favorites.items.cache.domain.usecase.GetPricesInCacheUseCase;
 import com.coupon.favorites.items.cache.domain.usecase.SavePricesInCacheUseCase;
 import com.coupon.favorites.items.itemsprice.domain.usecase.GetItemsPriceUseCase;
+import com.coupon.favorites.items.maximizedcoupon.domain.entity.ErrorCoupon;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponEntity;
 import com.coupon.favorites.items.maximizedcoupon.domain.entity.MaximizeCouponResponse;
 import com.coupon.favorites.items.maximizedcoupon.domain.event.IncCountFavoritesValueEvent;
@@ -242,6 +243,34 @@ class MaximizedCouponServiceImplTest {
 
         assertTrue(maximizeCouponEntity.getCoupon().getValue() >= response.getTotal());
         assertNotEquals(maximizeCouponEntity.getCoupon().getValue(), response.getTotal());
+
+    }
+
+    @Test
+    public void maximized_Coupon_When_Items_Price_Use_case_Return_Error() {
+        when(getPricesInCacheUseCase.execute(itemIds.stream().toList())).thenReturn(
+                new ArrayList<>());
+
+        when(getItemsPriceUseCase.execute(itemIds)).thenReturn(
+                Either.left(ErrorCoupon.ErrorGettingPrices));
+
+        doNothing().when(publisher)
+                .publishEvent(any(IncCountFavoritesValueEvent.class));
+
+        doNothing().when(savePricesInCacheUseCase)
+                .execute(itemsPrice);
+
+
+        ErrorCoupon response = (ErrorCoupon) maximizedCouponService.maximizeCoupon(maximizeCouponEntity).fold(
+                error -> error,
+                result -> result
+        );
+
+        assertTrue(response.getMessage().contains(ErrorCoupon.ErrorGettingPrices.getMessage()));
+        verify(getItemsPriceUseCase, times(1)).execute(any());
+        verify(publisher, times(1)).publishEvent(any(IncCountFavoritesValueEvent.class));
+        verify(getPricesInCacheUseCase, times(1)).execute(any());
+        verify(publisher, times(0)).publishEvent(any(SaveCachePricesValueEvent.class));
 
     }
 }
