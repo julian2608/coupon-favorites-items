@@ -12,6 +12,8 @@
 - Get located in path project cloned.
 - Execute `docker-compose up`
 
+>><span style="color:red">Note</span>: This project deployed temporary in aws in this url: http://ec2-18-222-183-122.us-east-2.compute.amazonaws.com:8080
+
 ## Documentation
 ### Token
 > #### <span style="color:yellow">POST</span>`https://dev-jfjtqh787zax8awu.us.auth0.com/oauth/token`
