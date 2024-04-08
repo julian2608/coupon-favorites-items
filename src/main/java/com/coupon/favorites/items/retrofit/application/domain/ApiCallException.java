@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.shared.util;
+package com.coupon.favorites.items.retrofit.application.domain;
 
 import lombok.Getter;
 

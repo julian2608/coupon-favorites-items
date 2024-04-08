@@ -1,6 +1,7 @@
-package com.coupon.favorites.items.shared.util;
+package com.coupon.favorites.items.retrofit.application;
 
 
+import com.coupon.favorites.items.retrofit.application.domain.ApiCallException;
 import okhttp3.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;

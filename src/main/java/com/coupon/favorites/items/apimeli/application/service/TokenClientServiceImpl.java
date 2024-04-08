@@ -1,9 +1,9 @@
 package com.coupon.favorites.items.apimeli.application.service;
 
-import com.coupon.favorites.items.shared.config.RetrofitConfig;
+import com.coupon.favorites.items.retrofit.application.config.RetrofitConfig;
 import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;
-import com.coupon.favorites.items.shared.util.ApiCallExecutor;
-import com.coupon.favorites.items.shared.util.RetryUtil;
+import com.coupon.favorites.items.retrofit.application.ApiCallExecutor;
+import com.coupon.favorites.items.retrofit.application.RetryUtil;
 import com.coupon.favorites.items.apimeli.domain.entity.TokenClientMem;
 import com.coupon.favorites.items.apimeli.domain.entity.TokenClientResponse;
 import com.coupon.favorites.items.apimeli.domain.service.TokenClientService;

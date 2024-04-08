@@ -1,4 +1,4 @@
-package com.coupon.favorites.items.shared.config;
+package com.coupon.favorites.items.retrofit.application.config;
 
 
 import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;

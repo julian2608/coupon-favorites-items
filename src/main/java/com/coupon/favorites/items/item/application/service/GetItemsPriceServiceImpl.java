@@ -5,7 +5,7 @@ import com.coupon.favorites.items.item.domain.entity.ItemPriceResponse;
 import com.coupon.favorites.items.item.domain.service.GetItemsPriceService;
 import com.coupon.favorites.items.apimeli.domain.service.MeliPublicApiService;
 import com.coupon.favorites.items.coupon.domain.valueobject.Item;
-import com.coupon.favorites.items.shared.util.ApiCallExecutorCallable;
+import com.coupon.favorites.items.retrofit.application.ApiCallExecutorCallable;
 import io.vavr.control.Either;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
