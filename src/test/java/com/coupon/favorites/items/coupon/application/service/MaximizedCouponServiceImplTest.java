@@ -24,6 +24,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 class MaximizedCouponServiceImplTest {
 
@@ -62,7 +63,7 @@ class MaximizedCouponServiceImplTest {
                 .favoritesItems(new ItemsId(itemIds))
                 .build();
 
-        MockitoAnnotations.openMocks(this);
+        openMocks(this);
     }
 
     @Test

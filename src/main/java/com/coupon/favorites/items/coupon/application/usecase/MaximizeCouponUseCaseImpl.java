@@ -19,10 +19,6 @@ public class MaximizeCouponUseCaseImpl implements MaximizeCouponUseCase {
 
     @Override
     public Either<ErrorCoupon, MaximizeCouponResponse> execute(MaximizeCouponEntity couponRequest) {
-        try {
             return maximizeCouponService.maximizeCoupon(couponRequest);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

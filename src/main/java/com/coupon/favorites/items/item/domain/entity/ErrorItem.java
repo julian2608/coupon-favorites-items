@@ -29,6 +29,13 @@ public class ErrorItem {
             .message("Favorite items not found.")
             .build();
 
+    public static ErrorItem ExceptionGettingFavorites
+            = ErrorItem
+            .builder()
+            .code(HttpStatus.NOT_FOUND)
+            .message("Error getting top favorites, please try again later.")
+            .build();
+
     public static ErrorItem errorSerializerItem () {
         return ErrorItem
                 .builder()

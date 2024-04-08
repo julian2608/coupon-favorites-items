@@ -7,6 +7,7 @@ import com.coupon.favorites.items.item.domain.repository.ItemFavoriteRepository;
 import io.vavr.control.Either;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,7 +21,12 @@ public class GetTopFavoritesServiceImpl implements GetTopFavoritesService {
 
     @Override
     public Either<ErrorItem, List<ItemFavorite>> execute(int maxTop) {
-        List<ItemFavorite> itemFavorites = itemFavoriteRepository.getTopFavorites(maxTop);
+        List<ItemFavorite> itemFavorites = new ArrayList<>();
+        try {
+            itemFavorites = itemFavoriteRepository.getTopFavorites(maxTop);
+        }catch (Exception e){
+            return Either.left(ErrorItem.ExceptionGettingFavorites);
+        }
         return !itemFavorites.isEmpty() ? Either.right(itemFavorites) : Either.left(ErrorItem.ErrorGettingFavorites);
     }
 }

@@ -2,6 +2,7 @@ package com.coupon.favorites.items.item.infrastructure.repository;
 
 import com.coupon.favorites.items.item.domain.entity.ErrorItem;
 import com.coupon.favorites.items.item.domain.entity.ItemFavorite;
+import com.coupon.favorites.items.item.domain.exception.ItemRepositoryException;
 import com.coupon.favorites.items.item.domain.repository.ItemFavoriteRepository;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @Repository
 public class ItemFavoriteRepositoryImpl implements ItemFavoriteRepository {
 
-    MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
     private final String nameCollection;
     private final String nameFieldId;
     private final String nameFieldQuantity;
@@ -76,7 +77,7 @@ public class ItemFavoriteRepositoryImpl implements ItemFavoriteRepository {
             return mongoTemplate.find(query, ItemFavorite.class, nameCollection);
         }catch (Exception e){
             logger.error(ErrorItem.ErrorGettingFavorites.getMessage(), e);
-            return List.of();
+            throw new ItemRepositoryException(e);
         }
     }
 

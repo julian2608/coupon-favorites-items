@@ -1,5 +1,6 @@
 package com.coupon.favorites.items.item.application.service;
 
+import com.coupon.favorites.items.item.domain.exception.IncrementQuantityException;
 import com.coupon.favorites.items.item.domain.service.IncQuantityFavoritesService;
 import com.coupon.favorites.items.item.domain.repository.ItemFavoriteRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class IncQuantityFavoritesServiceImpl implements IncQuantityFavoritesServ
         try{
             itemFavoriteRepository.incrementQuantity(favoritesItems);
         }catch (Exception e){
-            throw new RuntimeException(e);
+            throw new IncrementQuantityException(e);
         }
     }
 }

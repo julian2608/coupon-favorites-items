@@ -28,7 +28,7 @@ public class CouponController {
     }
 
     @PostMapping()
-    private ResponseEntity<Object> coupon(@RequestBody MaximizeCouponEntity maximizeCouponEntity) {
+    public ResponseEntity<Object> coupon(@RequestBody MaximizeCouponEntity maximizeCouponEntity) {
         return maximizeCouponUseCase.execute(maximizeCouponEntity).fold(
                 error -> ResponseEntity.status(error.getCode()).body(error),
                 ResponseEntity::ok
@@ -36,7 +36,7 @@ public class CouponController {
     }
 
     @GetMapping("/stats")
-    private ResponseEntity<Object> topFavorites(
+    public ResponseEntity<Object> topFavorites(
             @RequestParam(name = "maxTop", required = false, defaultValue = "5") int maxTop
     ) {
         return getTopFavoritesUseCase.execute(maxTop).fold(

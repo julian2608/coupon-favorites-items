@@ -27,10 +27,6 @@ public class ItemsId {
 
         this.value = value;
     }
-    public String toQueryParam(){
-        return String.join(",", value);
-    }
-
     public void clear () {
         this.value = null;
     }
